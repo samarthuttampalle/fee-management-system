@@ -1,0 +1,43 @@
+# Secrets & local Function settings (never commit real values)
+local.settings.json
+**/local.settings.json
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg
+
+# Azure Functions
+bin/
+obj/
+.python_packages/
+.python_packages/**
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Testcontainers
+.testcontainers/
+
+# Misc
+*.log
+.azure/

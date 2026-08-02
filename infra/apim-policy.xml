@@ -1,0 +1,30 @@
+<policies>
+  <inbound>
+    <base />
+    <choose>
+      <when condition="@(context.Operation.Id == &quot;get-health&quot;)" />
+      <otherwise>
+        <validate-jwt header-name="Authorization" failed-validation-httpcode="401" require-scheme="Bearer">
+          <openid-config url="https://login.microsoftonline.com/c88a7a61-11be-47ab-9a51-85e491a37349/v2.0/.well-known/openid-configuration" />
+          <audiences>
+            <audience>d49fca6c-f6c0-4dc0-8666-02f5b29ee099</audience>
+            <audience>api://d49fca6c-f6c0-4dc0-8666-02f5b29ee099</audience>
+          </audiences>
+        </validate-jwt>
+      </otherwise>
+    </choose>
+    <set-header name="x-correlation-id" exists-action="skip">
+      <value>@(context.RequestId.ToString())</value>
+    </set-header>
+  </inbound>
+  <backend>
+    <base />
+  </backend>
+  <outbound>
+    <base />
+    <set-header name="X-Powered-By" exists-action="delete" />
+  </outbound>
+  <on-error>
+    <base />
+  </on-error>
+</policies>

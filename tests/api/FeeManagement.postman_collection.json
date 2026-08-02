@@ -1,0 +1,208 @@
+{
+  "info": {
+    "name": "Fee Management API",
+    "description": "Phase 5: use Bearer local-admin-token or local-student-token (ENVIRONMENT=local only). Health remains public. For fee PUT concurrency: GET /students/{id} first (captures rowVersion/ETag), then send If-Match on PUT.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:7071/api" },
+    { "key": "studentId", "value": "4" },
+    { "key": "adminToken", "value": "local-admin-token" },
+    { "key": "studentToken", "value": "local-student-token" },
+    { "key": "rowVersion", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET health — happy path (no auth)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "x-correlation-id", "value": "postman-health-1" }],
+            "url": "{{baseUrl}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Students",
+      "item": [
+        {
+          "name": "GET student fee details — admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (body.rowVersion) { pm.collectionVariables.set('rowVersion', body.rowVersion); }",
+                  "const etag = pm.response.headers.get('ETag');",
+                  "if (etag) { pm.collectionVariables.set('rowVersion', etag.replaceAll('\"', '')); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "GET student fee details — 401 no token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "GET student fee details — student own record",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/students/{{studentId}}"
+          }
+        },
+        {
+          "name": "GET student fee details — student 403 other id",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/students/1"
+          }
+        },
+        {
+          "name": "GET student fee details — admin 404",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/students/999999"
+          }
+        },
+        {
+          "name": "GET payment-status — admin",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/students/{{studentId}}/payment-status"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "GET mgmt students — list",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/mgmt/students?page=1&pageSize=5"
+          }
+        },
+        {
+          "name": "GET mgmt students — 403 student token",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": "{{baseUrl}}/mgmt/students?page=1&pageSize=5"
+          }
+        },
+        {
+          "name": "GET mgmt students — filter Overdue",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/mgmt/students?status=Overdue&pageSize=100"
+          }
+        },
+        {
+          "name": "GET mgmt students — invalid status 400",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/mgmt/students?status=Nope"
+          }
+        },
+        {
+          "name": "PUT mgmt fee — partial update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "If-Match", "value": "\"{{rowVersion}}\"" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paidAmount\": 40000.00\n}"
+            },
+            "url": "{{baseUrl}}/mgmt/students/{{studentId}}/fee"
+          }
+        },
+        {
+          "name": "PUT mgmt fee — empty body 400",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": "{{baseUrl}}/mgmt/students/{{studentId}}/fee"
+          }
+        },
+        {
+          "name": "PUT mgmt fee — not found 404",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paidAmount\": 1\n}"
+            },
+            "url": "{{baseUrl}}/mgmt/students/999999/fee"
+          }
+        },
+        {
+          "name": "PUT mgmt fee — stale If-Match 409",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "If-Match", "value": "\"AAAAAAA=\"" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paidAmount\": 40000.00\n}"
+            },
+            "url": "{{baseUrl}}/mgmt/students/{{studentId}}/fee"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reminders",
+      "item": [
+        {
+          "name": "POST reminders/run — start orchestration",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/reminders/run?force=true"
+          }
+        }
+      ]
+    }
+  ]
+}

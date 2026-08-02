@@ -1,0 +1,21 @@
+# CD pipeline — deploy to Azure (optional; triggered manually / on tag).
+# Full workflow authored in Phase 9 / Phase 10.
+name: CD
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  deploy:
+    name: Deploy (placeholder)
+    runs-on: ubuntu-latest
+    if: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Placeholder
+        run: echo "CD deploy steps are added in Phase 9 (optional Azure deployment)."

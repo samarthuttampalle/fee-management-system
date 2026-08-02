@@ -1,0 +1,29 @@
+# Azure Functions runtime
+azure-functions
+azure-functions-durable
+azure-monitor-opentelemetry
+azure-identity
+
+# Data access
+sqlalchemy>=2.0
+pyodbc
+
+# Validation & settings
+pydantic>=2.0
+pydantic-settings
+
+# Auth
+pyjwt[crypto]
+
+# Notifications
+sendgrid
+
+# Testing (also used in CI)
+pytest
+pytest-asyncio
+testcontainers[mssql]
+
+# Lint / type check (CI + local)
+ruff
+black
+mypy
