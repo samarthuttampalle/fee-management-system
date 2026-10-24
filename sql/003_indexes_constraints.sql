@@ -1,6 +1,5 @@
--- =============================================================================
 -- Fee Management System — indexes, filtered unique keys, UpdatedAt trigger
--- =============================================================================
+
 
 CREATE UNIQUE INDEX UX_Students_AadObjectId
     ON dbo.Students(AadObjectId)
