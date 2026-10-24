@@ -1,8 +1,3 @@
--- =============================================================================
--- Fee Management System — schema (Azure SQL)
--- Run against the target database (e.g. sqldb-feemgmt-dev), not master.
--- =============================================================================
-
 PRINT CONCAT('Creating schema in database: ', DB_NAME());
 GO
 
