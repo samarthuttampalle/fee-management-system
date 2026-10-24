@@ -1,7 +1,6 @@
--- =============================================================================
 -- Align Administrators.Role with Entra App Roles: Administrator + Student only.
 -- Removes unused SuperAdmin value. Safe to re-run.
--- =============================================================================
+
 
 UPDATE dbo.Administrators
 SET Role = N'Administrator'
