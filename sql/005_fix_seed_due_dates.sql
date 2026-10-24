@@ -1,7 +1,6 @@
--- =============================================================================
 -- Fix seed due dates so PartiallyPaid / unpaid-not-yet-due examples remain valid
 -- relative to ~2026-08 (document "today"). Safe to re-run on existing Azure SQL.
--- =============================================================================
+
 
 UPDATE dbo.Students SET DueDate = '2026-10-15' WHERE StudentID = 2;  -- Priya Patel
 UPDATE dbo.Students SET DueDate = '2026-11-05' WHERE StudentID = 7;  -- Karan Kapoor
