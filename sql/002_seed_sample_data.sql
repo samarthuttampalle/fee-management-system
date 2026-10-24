@@ -1,10 +1,3 @@
--- =============================================================================
--- Fee Management System — sample data (20 students + 3 administrators)
--- Email addresses added per TDD §24.1 (required for reminder workflow).
--- Due dates calibrated relative to document "today" ≈ 2026-08-01 so that:
---   - Overdue, Paid, and PartiallyPaid (incl. unpaid-not-yet-due) are all present
--- =============================================================================
-
 INSERT INTO dbo.Students (Name, Course, Email, TotalFee, PaidAmount, DueDate) VALUES
 ('Aarav Sharma',       'B.Tech Computer Science', 'aarav.sharma@institution.edu',       120000.00, 120000.00, '2026-03-15'), -- Paid
 ('Priya Patel',        'B.Tech Electronics',      'priya.patel@institution.edu',        110000.00,  55000.00, '2026-10-15'), -- Partially Paid, not yet due
