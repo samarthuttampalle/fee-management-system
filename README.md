@@ -589,19 +589,4 @@ Primary template: [`local/local.settings.json.example`](local/local.settings.jso
 
 ---
 
-## Implementation notes
 
-- Local and cloud both target **Azure SQL** and **Azure Storage** (no Docker SQL / Azurite required for the documented path).
-- Integration tests use Azure SQL via `local.settings.json` (not testcontainers).
-- Admin HTTP paths are `/api/mgmt/...` because Functions reserves `admin`.
-- Dual JWT audiences (URI + app GUID) are supported in APIM policy and `jwt_validator.py`.
-- Roles are limited to **Administrator** and **Student** (`sql/006_drop_superadmin_role.sql` for older DBs).
-- Seed due-date corrections: `sql/005_fix_seed_due_dates.sql`.
-- Durable hub name: `FeeManagementTaskHub` (`host.json`).
-- Design detail and assignment rationale: [TDD](Docs/Fee_Management_System_TDD%20(1).md). Where code and TDD diverge (e.g. `/mgmt` vs `/admin`, local Azure SQL vs Docker), **this README and the repository reflect the implemented system**.
-
----
-
-## License
-
-This project is submitted as academic / assignment coursework. Add a license file if you intend to redistribute.
