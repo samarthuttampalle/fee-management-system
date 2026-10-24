@@ -1,7 +1,6 @@
--- =============================================================================
 -- Link Entra guest/member OIDs to seed rows for Azure dev smoke tests.
 -- Emails updated so SendGrid reminders reach the real mailboxes.
--- =============================================================================
+
 
 -- Administrator: uttampallesamarth3@gmail.com
 UPDATE dbo.Administrators
